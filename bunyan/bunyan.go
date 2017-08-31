@@ -1,6 +1,3 @@
-// Package bunyan implements the node.js logging library bunyan in go.
-// According to https://github.com/trentm/node-bunyan it is a simple and fast JSON logging library.
-// See https://github.com/trentm/node-bunyan#log-method-api for log method api
 package bunyan
 
 import (
