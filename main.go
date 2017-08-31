@@ -1,11 +1,11 @@
 package main
 
 import (
+	"errors"
 	"github.com/bhoriuchi/go-bunyan/bunyan"
 	"log"
 	"os"
 	"path/filepath"
-	"errors"
 )
 
 /*
@@ -29,11 +29,11 @@ func main() {
 				Stream: os.Stdout,
 			},
 			{
-				Path: filepath.Join(baseDir, "info.log"),
+				Path:  filepath.Join(baseDir, "info.log"),
 				Level: bunyan.LogLevelInfo,
 			},
 			{
-				Path: filepath.Join(baseDir, "error.log"),
+				Path:  filepath.Join(baseDir, "error.log"),
 				Level: bunyan.LogLevelError,
 			},
 		},

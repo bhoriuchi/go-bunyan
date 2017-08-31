@@ -4,11 +4,11 @@ import "strings"
 
 // Logger handles writing logs to the appropriate streams.
 type Logger struct {
-	config Config
-	hostname string
-	streams []Stream
+	config       Config
+	hostname     string
+	streams      []Stream
 	staticFields map[string]interface{}
-	serializers map[string]func(value interface{}) interface{}
+	serializers  map[string]func(value interface{}) interface{}
 }
 
 // AddStream dynamically adds a stream to the current logger.
@@ -110,16 +110,16 @@ func (l *Logger) Child(staticFields map[string]interface{}) Logger {
 	}
 
 	logger := Logger{
-		config: l.config,
-		hostname: l.hostname,
-		streams: l.streams,
+		config:       l.config,
+		hostname:     l.hostname,
+		streams:      l.streams,
 		staticFields: newStaticFields,
 	}
 	return logger
 }
 
 func (l *Logger) Fatal(args ...interface{}) {
-	_log := bunyanLog{ args: args, logger: *l }
+	_log := bunyanLog{args: args, logger: *l}
 
 	for _, stream := range l.streams {
 		if toLogLevelInt(stream.Level) <= toLogLevelInt(LogLevelFatal) {
@@ -129,7 +129,7 @@ func (l *Logger) Fatal(args ...interface{}) {
 }
 
 func (l *Logger) Error(args ...interface{}) {
-	_log := bunyanLog{ args: args, logger: *l }
+	_log := bunyanLog{args: args, logger: *l}
 
 	for _, stream := range l.streams {
 		if toLogLevelInt(stream.Level) <= toLogLevelInt(LogLevelError) {
@@ -139,7 +139,7 @@ func (l *Logger) Error(args ...interface{}) {
 }
 
 func (l *Logger) Warn(args ...interface{}) {
-	_log := bunyanLog{ args: args, logger: *l }
+	_log := bunyanLog{args: args, logger: *l}
 
 	for _, stream := range l.streams {
 		if toLogLevelInt(stream.Level) <= toLogLevelInt(LogLevelWarn) {
@@ -149,7 +149,7 @@ func (l *Logger) Warn(args ...interface{}) {
 }
 
 func (l *Logger) Info(args ...interface{}) {
-	_log := bunyanLog{ args: args, logger: *l }
+	_log := bunyanLog{args: args, logger: *l}
 
 	for _, stream := range l.streams {
 		if toLogLevelInt(stream.Level) <= toLogLevelInt(LogLevelInfo) {
@@ -159,7 +159,7 @@ func (l *Logger) Info(args ...interface{}) {
 }
 
 func (l *Logger) Debug(args ...interface{}) {
-	_log := bunyanLog{ args: args, logger: *l }
+	_log := bunyanLog{args: args, logger: *l}
 
 	for _, stream := range l.streams {
 		if toLogLevelInt(stream.Level) <= toLogLevelInt(LogLevelDebug) {
@@ -169,7 +169,7 @@ func (l *Logger) Debug(args ...interface{}) {
 }
 
 func (l *Logger) Trace(args ...interface{}) {
-	_log := bunyanLog{ args: args, logger: *l }
+	_log := bunyanLog{args: args, logger: *l}
 
 	for _, stream := range l.streams {
 		if toLogLevelInt(stream.Level) <= toLogLevelInt(LogLevelTrace) {

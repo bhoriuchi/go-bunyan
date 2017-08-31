@@ -5,21 +5,21 @@ package bunyan
 
 import (
 	"fmt"
-	"regexp"
-	"os"
 	"io"
+	"os"
+	"regexp"
 )
 
 const LOG_VERSION = 0 // states the current bunyan log specification version
 
 // Config is used to construct a bunyanLogger with one or more logging streams.
 type Config struct {
-	Name string // default name to use for streams; required
-	Level string // default log level to use for streams
-	Stream io.Writer // a stream location that implements the io.Writer interface
-	Streams []Stream // an array of Stream configurations
-	Serializers map[string]func(value interface{}) interface{} // a mapping of field names to serialization functions used for those fields
-	StaticFields map[string]interface{} // a predefined set of fields that will be added to all logs
+	Name         string                                         // default name to use for streams; required
+	Level        string                                         // default log level to use for streams
+	Stream       io.Writer                                      // a stream location that implements the io.Writer interface
+	Streams      []Stream                                       // an array of Stream configurations
+	Serializers  map[string]func(value interface{}) interface{} // a mapping of field names to serialization functions used for those fields
+	StaticFields map[string]interface{}                         // a predefined set of fields that will be added to all logs
 }
 
 // CreateLogger creates a new bunyanLogger.
@@ -66,7 +66,7 @@ func CreateLogger(args ...interface{}) (Logger, error) {
 			logger.AddStream(stream)
 		}
 	} else if config.Stream != nil {
-		simpleStream := Stream{ Stream: config.Stream, Name: config.Name }
+		simpleStream := Stream{Stream: config.Stream, Name: config.Name}
 		logger.AddStream(simpleStream)
 	}
 

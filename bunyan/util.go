@@ -1,10 +1,10 @@
 package bunyan
 
 import (
-	"time"
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 )
 
 func stringDefault(value string, defaultValue string) string {

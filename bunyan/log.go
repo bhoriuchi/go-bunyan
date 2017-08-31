@@ -1,14 +1,14 @@
 package bunyan
 
 import (
-	"os"
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 )
 
 type bunyanLog struct {
-	args []interface{}
+	args   []interface{}
 	logger Logger
 }
 
