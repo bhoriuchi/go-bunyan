@@ -4,11 +4,25 @@ import (
 	"fmt"
 	"regexp"
 	"os"
+	"io"
 )
 
-func createLogger(args ...interface{}) (Logger, error) {
+// export the log version
+const LOG_VERSION = 0
+
+type Config struct {
+	Name string
+	Level string
+	Stream io.Writer
+	Streams []Stream
+	Serializers map[string]func(value interface{}) interface{}
+	StaticFields map[string]interface{}
+}
+
+// main function to create a new logger
+func CreateLogger(args ...interface{}) (bunyanLogger, error) {
 	config := Config{}
-	logger := Logger{}
+	logger := bunyanLogger{}
 	r := regexp.MustCompile(`bunyan.Config$`)
 
 	if len(args) == 0 {
@@ -23,7 +37,7 @@ func createLogger(args ...interface{}) (Logger, error) {
 	}
 
 	arg := args[0]
-	argType := TypeName(arg)
+	argType := typeName(arg)
 
 	if argType == "string" {
 		config.Name = arg.(string)
@@ -36,21 +50,19 @@ func createLogger(args ...interface{}) (Logger, error) {
 		return logger, fmt.Errorf("Create logger requires either a bunyan.Config or String argument")
 	}
 
-	// add the streams
-	if len(config.Streams) != 0 {
-		logger.streams = config.Streams
-	} else if config.Stream != nil {
-		logger.streams = append(logger.streams, Stream{ Stream: config.Stream, Name: config.Name })
-	}
-
 	// add the config to the logger
 	logger.config = config
+	logger.staticFields = config.StaticFields
+	logger.serializers = config.Serializers
 
-	// init all the streams
-	for _, stream := range logger.streams {
-		if err := stream.init(config); err != nil {
-			return logger, err
+	// add the streams
+	if len(config.Streams) != 0 {
+		for _, stream := range config.Streams {
+			logger.AddStream(stream)
 		}
+	} else if config.Stream != nil {
+		simpleStream := Stream{ Stream: config.Stream, Name: config.Name }
+		logger.AddStream(simpleStream)
 	}
 
 	return logger, nil

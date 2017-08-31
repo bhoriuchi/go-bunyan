@@ -3,38 +3,68 @@ package bunyan
 import (
 	"time"
 	"fmt"
-	"reflect"
 	"regexp"
+	"strings"
 )
 
-func StringDefault(value string, defaultValue string) string {
+func stringDefault(value string, defaultValue string) string {
 	if value == "" {
 		return defaultValue
 	}
 	return value
 }
 
-func IntDefault(value int, defaultValue int) int {
+func intDefault(value int, defaultValue int) int {
 	if value == 0 {
 		return defaultValue
 	}
 	return value
 }
 
-func NowTimestamp() string {
+func nowTimestamp() string {
 	return time.Now().UTC().Format("2006-01-02T15:04:05.999Z07:00")
 }
 
-func TypeName(value interface{}) string {
-	return fmt.Sprintf("%v", reflect.Type(value))
+func typeName(value interface{}) string {
+	return fmt.Sprintf("%T", value)
 }
 
-func IsHashMap(value interface{}) bool {
+func isHashMap(value interface{}) bool {
 	r := regexp.MustCompile(`^*?map\[string\]`)
-	return r.MatchString(TypeName(value))
+	return r.MatchString(typeName(value))
 }
 
-func IsError(value interface{}) bool {
+func isError(value interface{}) bool {
 	r := regexp.MustCompile(`^*?errors.errorString`)
-	return r.MatchString(TypeName(value))
+	return r.MatchString(typeName(value))
+}
+
+func canSetField(key interface{}) bool {
+	switch strings.ToLower(key.(string)) {
+	case "v":
+		return false
+	case "level":
+		return false
+	default:
+		return true
+	}
+}
+
+func toLogLevelInt(level string) int {
+	switch strings.ToLower(level) {
+	case LogLevelFatal:
+		return 60
+	case LogLevelError:
+		return 50
+	case LogLevelWarn:
+		return 40
+	case LogLevelInfo:
+		return 30
+	case LogLevelDebug:
+		return 20
+	case LogLevelTrace:
+		return 10
+	default:
+		return 0
+	}
 }

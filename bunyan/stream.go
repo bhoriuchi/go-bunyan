@@ -8,7 +8,7 @@ import (
 type Stream struct {
 	// universal fields
 	Type string
-	Level int
+	Level string
 	Name string
 
 	// stream fields
@@ -20,13 +20,6 @@ type Stream struct {
 	// rotating file fields
 	Period string
 	Count int
-}
-
-type Config struct {
-	Name string
-	Level int
-	Stream io.Writer
-	Streams []Stream
 }
 
 func (s *Stream) init(config Config) error {
@@ -42,11 +35,11 @@ func (s *Stream) init(config Config) error {
 		return fmt.Errorf("Invalid stream options, could not determine stream type")
 	}
 
-	s.Name = StringDefault(s.Name, config.Name)
-	s.Level = IntDefault(s.Level, config.Level)
+	s.Name = stringDefault(s.Name, config.Name)
+	s.Level = stringDefault(s.Level, config.Level)
 
 	// set default log level
-	if s.Level <= 0 {
+	if toLogLevelInt(s.Level) <= 0 {
 		s.Level = LogLevelInfo
 	}
 

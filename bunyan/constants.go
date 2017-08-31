@@ -1,12 +1,12 @@
 package bunyan
 
 // log levels
-const LogLevelFatal = 60
-const LogLevelError = 50
-const LogLevelWarn = 40
-const LogLevelInfo = 30
-const LogLevelDebug = 20
-const LogLevelTrace = 10
+const LogLevelFatal = "fatal"
+const LogLevelError = "error"
+const LogLevelWarn = "warn"
+const LogLevelInfo = "info"
+const LogLevelDebug = "debug"
+const LogLevelTrace = "trace"
 
 // log types
 const LogTypeStream = "stream"
