@@ -9,7 +9,7 @@ import (
 
 type bunyanLog struct {
 	args []interface{}
-	logger bunyanLogger
+	logger Logger
 }
 
 // serializes a log field

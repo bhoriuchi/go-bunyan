@@ -1,3 +1,6 @@
+// Package bunyan implements the node.js logging library bunyan in go.
+// According to https://github.com/trentm/node-bunyan it is a simple and fast JSON logging library.
+// See https://github.com/trentm/node-bunyan#log-method-api for log method api
 package bunyan
 
 import (
@@ -7,22 +10,24 @@ import (
 	"io"
 )
 
-// export the log version
-const LOG_VERSION = 0
+const LOG_VERSION = 0 // states the current bunyan log specification version
 
+// Config is used to construct a bunyanLogger with one or more logging streams.
 type Config struct {
-	Name string
-	Level string
-	Stream io.Writer
-	Streams []Stream
-	Serializers map[string]func(value interface{}) interface{}
-	StaticFields map[string]interface{}
+	Name string // default name to use for streams; required
+	Level string // default log level to use for streams
+	Stream io.Writer // a stream location that implements the io.Writer interface
+	Streams []Stream // an array of Stream configurations
+	Serializers map[string]func(value interface{}) interface{} // a mapping of field names to serialization functions used for those fields
+	StaticFields map[string]interface{} // a predefined set of fields that will be added to all logs
 }
 
-// main function to create a new logger
-func CreateLogger(args ...interface{}) (bunyanLogger, error) {
+// CreateLogger creates a new bunyanLogger.
+// Either a Config or string can be passed as the only argument.
+// It returns a new Logger. If no errors were encountered, error will be nil.
+func CreateLogger(args ...interface{}) (Logger, error) {
 	config := Config{}
-	logger := bunyanLogger{}
+	logger := Logger{}
 	r := regexp.MustCompile(`bunyan.Config$`)
 
 	if len(args) == 0 {
