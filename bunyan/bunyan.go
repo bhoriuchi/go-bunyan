@@ -11,12 +11,13 @@ const LOG_VERSION = 0 // states the current bunyan log specification version
 
 // Config is used to construct a bunyanLogger with one or more logging streams.
 type Config struct {
-	Name         string                                         // default name to use for streams; required
-	Level        string                                         // default log level to use for streams
-	Stream       io.Writer                                      // a stream location that implements the io.Writer interface
-	Streams      []Stream                                       // an array of Stream configurations
-	Serializers  map[string]func(value interface{}) interface{} // a mapping of field names to serialization functions used for those fields
-	StaticFields map[string]interface{}                         // a predefined set of fields that will be added to all logs
+	Name         	 string                                         // default name to use for streams; required
+	Level        	 string                                         // default log level to use for streams
+	Stream       	 io.Writer                                      // a stream location that implements the io.Writer interface
+	Streams      	 []Stream                                       // an array of Stream configurations
+	Serializers  	 map[string]func(value interface{}) interface{} // a mapping of field names to serialization functions used for those fields
+	StaticFields 	 map[string]interface{}                         // a predefined set of fields that will be added to all logs
+	DefaultKey	 	 string	 											  								// default message key
 }
 
 // CreateLogger creates a new bunyanLogger.
@@ -52,10 +53,16 @@ func CreateLogger(args ...interface{}) (Logger, error) {
 		return logger, fmt.Errorf("Create logger requires either a bunyan.Config or String argument")
 	}
 
+	if config.DefaultKey == "" {
+		config.DefaultKey="msg"
+	}
+
+
 	// add the config to the logger
 	logger.config = config
 	logger.staticFields = config.StaticFields
 	logger.serializers = config.Serializers
+	logger.defaultKey = config.DefaultKey
 
 	// add the streams
 	if len(config.Streams) != 0 {

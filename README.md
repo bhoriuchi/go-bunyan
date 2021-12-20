@@ -41,7 +41,26 @@ import (
 func main() {
 	staticFields := make(map[string]interface{})
 	staticFields["foo"] = "bar"
+
+    type Employee struct {
+	Name    string
+	Id      int
+	Address string
+	Salary  int
+	Country string
+	O       []*Order
+	Z       []string
+    }
 	
+    e := &Employee{
+		Name:    "Naveen",
+		Id:      565,
+		Address: "Coimbatore",
+		Salary:  90000,
+		Country: "India",
+		O:       orders,
+		Z:       z,
+    }	
     config := bunyan.Config{
         Name: "app",
         Streams: []bunyan.Stream{
@@ -57,10 +76,11 @@ func main() {
             },
         },
         StaticFields: staticFields,
+	DefaultKey:"message",
     }
     
     if log, err := bunyan.CreateLogger(config); err == nil {
-        log.Info("Hello %s!", "World")
+        log.Info("default key and struct log",e)
     }
 }
 ```
