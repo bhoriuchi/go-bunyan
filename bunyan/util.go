@@ -48,11 +48,11 @@ func getDetailsLog(value interface{}) map[string]interface{} {
 	}
 	details := make(map[string]interface{})
 	if v.Kind() == reflect.Struct {
-		structS:=make(map[string]interface{})
+		structS := make(map[string]interface{})
 		for i := 0; i < v.NumField(); i++ {
 			structS[v.Type().Field(i).Name] = getValue(v.Field((i)))
 		}
-		details[v.Type().Name()]=structS
+		details[v.Type().Name()] = structS
 		return details
 	} else {
 		details[v.Type().Name()] = getValue(v)
@@ -75,24 +75,51 @@ func getValue(value reflect.Value) interface{} {
 		var c []interface{}
 		for i := 0; i < s.Len(); i++ {
 			if s.Index(i).Kind() == reflect.Struct {
-				c = append(c, getDetailsLog(s.Index(i).Interface()))
+				existInterface := value.CanInterface()
+				if existInterface {
+					c = append(c, getDetailsLog(s.Index(i).Interface()))
+				} else {
+					c = append(c, getDetailsLog(s.Index(i)))
+				}
 			} else if s.Index(i).Kind() == reflect.Ptr {
-				c = append(c, getDetailsLog(s.Index(i).Interface()))
+				existInterface := value.CanInterface()
+				if existInterface {
+					c = append(c, getDetailsLog(s.Index(i).Interface()))
+				} else {
+					c = append(c, getDetailsLog(s.Index(i)))
+				}
 			} else {
 				c = append(c, getValue(s.Index(i)))
 			}
 		}
 		return c
 	case reflect.Ptr:
-		return getDetailsLog(value.Interface())
+		t := value.CanInterface()
+		if t {
+			return getDetailsLog(value.Interface())
+		} else {
+			if value.Kind() == reflect.Ptr {
+				value = value.Elem()
+			}
+			var address string
+			if value.CanAddr() {
+				address = fmt.Sprint(value.Addr())
+			}
+			return address
+		}
 	case reflect.String:
 		return value.String()
 	case reflect.Struct:
-		s := value.Interface()
-		return getDetailsLog(s)
+		existInterface := value.CanInterface()
+		if existInterface {
+			interfacesV := value.Interface()
+			return getDetailsLog(interfacesV)
+		} else {
+			return getDetailsLog(reflect.ValueOf(value))
+		}
 	default:
 		return value
-	}	
+	}
 }
 
 func isError(value interface{}) bool {
