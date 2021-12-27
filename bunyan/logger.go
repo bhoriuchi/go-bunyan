@@ -9,6 +9,7 @@ type Logger struct {
 	streams      []Stream
 	staticFields map[string]interface{}
 	serializers  map[string]func(value interface{}) interface{}
+	defaultKey	 string
 }
 
 // AddStream dynamically adds a stream to the current logger.
